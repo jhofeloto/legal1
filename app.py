@@ -36,54 +36,11 @@ def webhook():
     r.headers['Content-Type'] = 'application/json'
     return r
 
-##2 Funcion principal llama API.AI parametros y los coloca en una consulta
-def makeWebhookResult(req):
-    if req.get("result").get("action") != "buscarAtractivos":
-        return {}
-    result = req.get("result")#invocar el result del json
-    parameters = result.get("parameters")#invocar el parameters dentro de result
-    atractivos = parameters.get("atractivos")#DATO TRAÍDO DE API.AI - ATRACTIVOS
-
-    #URL BASE CONSULTA ATRACTIVOS JSON
-    baseUrlAtractivos = "http://situr.boyaca.gov.co/wp-json/wp/v2/atractivo_turistico?per_page=10&orderby=relevance&search="#URL Base Atractivos
-    retirarEspacios = atractivos.replace(" ",  "%20")#Retirar Espacios Atractivos
-
-    leerAtractivo = json.loads(urlopen(baseUrlAtractivos + retirarEspacios).read())
-    cantidadResultados = str(len(leerAtractivo))#Contar Cantidad de Resultados Encontrados
-
-    speech = "Mira 😃, encontré " + cantidadResultados+ " resultados"
-
-    print("Response:")
-    print(speech)
-
-    return {
-        "speech": "",
-        "messages": [
-        {
-        "type": 0,
-        "platform": "facebook",
-        "speech": "Dame un momento, estoy buscando entre mis archivos...🔍"
-        },
-        {
-        "type": 0,
-        "platform": "facebook",
-        "speech": speech
-        },
-        {
-          "type": 4,
-          "platform": "facebook",
-          "payload": listadoBusqueda(leerAtractivo)
-        }
-
-##2 Funcion principal llama API.AI parametros y los coloca en una consulta
-
-##1 Funcion que muestra  el listado de resultados deacuerdo al json disponible
 def listadoBusqueda(urlBaseJson):
     pruebatitulos = ""
     varComa = 0
     for x in range(0,len(urlBaseJson)):
         tituloItem = urlBaseJson[x]['title']['rendered']
-        categorias = urlBaseJson[x]['title']['rendered']
         imagenDefAtractivos = urlBaseJson[x]['better_featured_image']['media_details']['sizes']['medium']['source_url']
 #        descripcionItem = re.sub("<.*?>", "", (urlBaseJson[x]['excerpt']['rendered'])[0:85])#Descripción del atractivo eliminando etiquetas
         if varComa < len(urlBaseJson)-1:
@@ -109,8 +66,6 @@ def listadoBusqueda(urlBaseJson):
 #    resultadoMauricio = json.dumps(resultadoMauricio)
     resultadoMauricio = json.loads(resultadoMauricio)
     return resultadoMauricio
-##1C Funcion que muestra  el listado de resultados deacuerdo al json disponible
-
 
 
 inicioFBCard = '{"facebook" : {"attachment" : {"type" : "template","payload" : {"template_type" : "generic","elements" : ['
@@ -162,7 +117,43 @@ putafuncion = """{
 
 putafuncion = json.loads(putafuncion)
 
+def makeWebhookResult(req):
+    if req.get("result").get("action") != "buscarAtractivos":
+        return {}
+    result = req.get("result")#invocar el result del json
+    parameters = result.get("parameters")#invocar el parameters dentro de result
+    atractivos = parameters.get("atractivos")#DATO TRAÍDO DE API.AI - ATRACTIVOS
 
+    #URL BASE CONSULTA ATRACTIVOS JSON
+    baseUrlAtractivos = "http://situr.boyaca.gov.co/wp-json/wp/v2/atractivo_turistico?per_page=10&orderby=relevance&search="#URL Base Atractivos
+    retirarEspacios = atractivos.replace(" ",  "%20")#Retirar Espacios Atractivos
+
+    leerAtractivo = json.loads(urlopen(baseUrlAtractivos + retirarEspacios).read())
+    cantidadResultados = str(len(leerAtractivo))#Contar Cantidad de Resultados Encontrados
+
+    speech = "Mira 😃, encontré " + cantidadResultados+ " resultados"
+
+    print("Response:")
+    print(speech)
+
+    return {
+        "speech": "",
+        "messages": [
+        {
+        "type": 0,
+        "platform": "facebook",
+        "speech": "Dame un momento, estoy buscando entre mis archivos...🔍"
+        },
+        {
+        "type": 0,
+        "platform": "facebook",
+        "speech": speech
+        },
+        {
+          "type": 4,
+          "platform": "facebook",
+          "payload": listadoBusqueda(leerAtractivo)
+        }
 #        {
 #          "type": 2,
 #          "platform": "facebook",
