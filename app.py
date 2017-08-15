@@ -120,10 +120,10 @@ putafuncion = json.loads(putafuncion)
 def makeWebhookResult(req):
     if req.get("result").get("action") != "buscarAtractivos":
         return {}
-    result = req.get("result")#invocar el result del json 
+    result = req.get("result")#invocar el result del json
     parameters = result.get("parameters")#invocar el parameters dentro de result
     atractivos = parameters.get("atractivos")#DATO TRAÍDO DE API.AI - ATRACTIVOS
-    
+
     #URL BASE CONSULTA ATRACTIVOS JSON
     baseUrlAtractivos = "http://situr.boyaca.gov.co/wp-json/wp/v2/atractivo_turistico?per_page=10&orderby=relevance&search="#URL Base Atractivos
     retirarEspacios = atractivos.replace(" ",  "%20")#Retirar Espacios Atractivos
@@ -131,7 +131,7 @@ def makeWebhookResult(req):
     leerAtractivo = json.loads(urlopen(baseUrlAtractivos + retirarEspacios).read())
     cantidadResultados = str(len(leerAtractivo))#Contar Cantidad de Resultados Encontrados
 
-    speech = "Mira 😃, encontre " + cantidadResultados+ " resultados"
+    speech = "Mira 😃, encontré " + cantidadResultados+ " resultados"
 
     print("Response:")
     print(speech)
@@ -280,7 +280,7 @@ def makeWebhookResult(req):
         "source": "soy-un-dato-irrelevante"
 #        "source": listadoBusqueda(leerAtractivo)
     }"""
-    
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
 
