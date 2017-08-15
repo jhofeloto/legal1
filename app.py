@@ -36,87 +36,7 @@ def webhook():
     r.headers['Content-Type'] = 'application/json'
     return r
 
-def listadoBusqueda(urlBaseJson):
-    pruebatitulos = ""
-    varComa = 0
-    for x in range(0,len(urlBaseJson)):
-        tituloItem = urlBaseJson[x]['title']['rendered']
-        imagenDefAtractivos = urlBaseJson[x]['better_featured_image']['media_details']['sizes']['medium']['source_url']
-#        descripcionItem = re.sub("<.*?>", "", (urlBaseJson[x]['excerpt']['rendered'])[0:85])#Descripción del atractivo eliminando etiquetas
-        if varComa < len(urlBaseJson)-1:
-            varComa = varComa +1
-            print (varComa)
-            comaJson = ","
-        else:
-            comaJson = ""
-        pruebatitulos = pruebatitulos + ("""                            {
-                                "title" : \""""+tituloItem+"""\",
-                                "image_url" : \""""+imagenDefAtractivos+"""\",
-                                "subtitle": \""""+tituloItem+"""\",
-                                "buttons":  [
-                                    {
-                                        "type":"web_url",
-                                        "url": \""""+urlBaseJson[x]['link']+"""\",
-                                        "title": "Ver en SITUR"
-                                    }
-                                ]
-                            }""" + str(comaJson) + """""")
-
-    resultadoMauricio = inicioFBCard+pruebatitulos+finFBCard
-#    resultadoMauricio = json.dumps(resultadoMauricio)
-    resultadoMauricio = json.loads(resultadoMauricio)
-    return resultadoMauricio
-
-
-inicioFBCard = '{"facebook" : {"attachment" : {"type" : "template","payload" : {"template_type" : "generic","elements" : ['
-
-finFBCard = ']}}}}'
-
-
-putafuncion = """{
-            "facebook": {
-              "attachment": {
-                "type": "template",
-                "payload": {
-                  "template_type": "generic",
-                  "elements": [
-                    {
-                      "title": "HE VUELTO y con más",
-                      "image_url": "http://www.boyaca.gov.co/SecCultura/images/MARCA%20REGION%20BOYACA%20ES%20PARA%20VIVIRLA-1.jpg",
-                      "subtitle": "soy la descripcion",
-                      "buttons": [
-                        {
-                          "type": "web_url",
-                          "url": "http://situr.boyaca.gov.co",
-                          "title": "boton3"
-                        }
-                      ]
-                    },
-                    {
-                      "title": "soy el otro titulo",
-                      "image_url": "https://www.dondevive.org/wp-content/uploads/2015/08/donde-viven-los-conejos.jpg",
-                      "subtitle": "soy la descripción",
-                      "default_action": {
-                        "type": "web_url",
-                        "url": "https://www.moovrika.com/m/4167",
-                        "webview_height_ratio": "tall"
-                      },
-                      "buttons": [
-                        {
-                          "type": "web_url",
-                          "url": "http://situr.boyaca.gov.co",
-                          "title": "boton3"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-          }"""
-
-putafuncion = json.loads(putafuncion)
-
+#Funcion 2 consultar resultados
 def makeWebhookResult(req):
     if req.get("result").get("action") != "buscarAtractivos":
         return {}
@@ -180,6 +100,97 @@ def makeWebhookResult(req):
         "source": "soy-un-dato-irrelevante"
 #        "source": listadoBusqueda(leerAtractivo)
     }
+
+#Fin funcion2 buscar resultados
+
+#Funcion1 listadoBusqueda mostrar resultados JSON
+def listadoBusqueda(urlBaseJson):
+    pruebatitulos = ""
+    varComa = 0
+    for x in range(0,len(urlBaseJson)):
+        tituloItem = urlBaseJson[x]['title']['rendered']
+        descripcionA = urlBaseJson[x]['excerpt']['rendered']
+
+        imagenDefAtractivos = urlBaseJson[x]['better_featured_image']['media_details']['sizes']['medium_large']['source_url']
+#        descripcionItem = re.sub("<.*?>", "", (urlBaseJson[x]['excerpt']['rendered'])[0:85])#Descripción del atractivo eliminando etiquetas
+        if varComa < len(urlBaseJson)-1:
+            varComa = varComa +1
+            print (varComa)
+            comaJson = ","
+        else:
+            comaJson = ""
+        pruebatitulos = pruebatitulos + ("""                            {
+                                "title" : \""""+tituloItem+"""\",
+                                "image_url" : \""""+imagenDefAtractivos+"""\",
+                                "subtitle": \""""+descripcionA+"""\",
+                                "buttons":  [
+                                    {
+                                        "type":"web_url",
+                                        "url": \""""+urlBaseJson[x]['link']+"""\",
+                                        "title": "Ver en SITUR"
+                                    }
+                                ]
+                            }""" + str(comaJson) + """""")
+
+    resultadoMauricio = inicioFBCard+pruebatitulos+finFBCard
+#    resultadoMauricio = json.dumps(resultadoMauricio)
+    resultadoMauricio = json.loads(resultadoMauricio)
+    return resultadoMauricio
+
+
+
+
+
+inicioFBCard = '{"facebook" : {"attachment" : {"type" : "template","payload" : {"template_type" : "generic","elements" : ['
+
+finFBCard = ']}}}}'
+
+
+putafuncion = """{
+            "facebook": {
+              "attachment": {
+                "type": "template",
+                "payload": {
+                  "template_type": "generic",
+                  "elements": [
+                    {
+                      "title": "HE VUELTO y con más",
+                      "image_url": "http://www.boyaca.gov.co/SecCultura/images/MARCA%20REGION%20BOYACA%20ES%20PARA%20VIVIRLA-1.jpg",
+                      "subtitle": "soy la descripcion",
+                      "buttons": [
+                        {
+                          "type": "web_url",
+                          "url": "http://situr.boyaca.gov.co",
+                          "title": "boton3"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "soy el otro titulo",
+                      "image_url": "https://www.dondevive.org/wp-content/uploads/2015/08/donde-viven-los-conejos.jpg",
+                      "subtitle": "soy la descripción",
+                      "default_action": {
+                        "type": "web_url",
+                        "url": "https://www.moovrika.com/m/4167",
+                        "webview_height_ratio": "tall"
+                      },
+                      "buttons": [
+                        {
+                          "type": "web_url",
+                          "url": "http://situr.boyaca.gov.co",
+                          "title": "boton3"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }"""
+
+putafuncion = json.loads(putafuncion)
+
+
 
 """    return {
         "speech": "",
