@@ -41,6 +41,7 @@ def listadoBusqueda(urlBaseJson):
     varComa = 0
     for x in range(0,len(urlBaseJson)):
         tituloItem = urlBaseJson[x]['title']['rendered']
+        descripcionA = urlBaseJson[x]['excerpt']['rendered']
         imagenDefAtractivos = urlBaseJson[x]['better_featured_image']['media_details']['sizes']['medium']['source_url']
 #        descripcionItem = re.sub("<.*?>", "", (urlBaseJson[x]['excerpt']['rendered'])[0:85])#Descripción del atractivo eliminando etiquetas
         if varComa < len(urlBaseJson)-1:
@@ -52,7 +53,7 @@ def listadoBusqueda(urlBaseJson):
         pruebatitulos = pruebatitulos + ("""                            {
                                 "title" : \""""+tituloItem+"""\",
                                 "image_url" : \""""+imagenDefAtractivos+"""\",
-                                "subtitle": \""""+tituloItem+"""\",
+                                "subtitle": \""""+descripcionA+"""\",
                                 "buttons":  [
                                     {
                                         "type":"web_url",
